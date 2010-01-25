@@ -1,14 +1,12 @@
-Moonshine DS Tools
-------------------
+# Moonshine DS Tools
 
-A plugin for [Moonshine](http://github.com/railsmachine/moonshine)
-================================================================
+## A plugin for [Moonshine](http://github.com/railsmachine/moonshine)
 
 A plugin that provides tools configured by [digital scientists](http://digitalscientists.com/) for deploying Rails apps
 
 
-Tools included
-==============
+## Tools included
+
 
 * Astrails-Safe backup
 * phpMyAdmin (PHP)
@@ -18,8 +16,7 @@ Tools included
 * Radiant CMS
 
 
-Instructions
-============ 
+## Instructions
 
 Install Moonshine and related plugins:
 
@@ -72,8 +69,7 @@ cap staging deploy -p PORT=22
 * the initial deploy will take much longer than future ones b/c many things are being installed for your app
 * after this deploy, port is optional b/c moonshine will move ssh access to 30306 and the cap script will automatically use 30306
 
-Tools and Settings
-==========
+## Tools and Settings
 
 ### phpMyadmin
 
