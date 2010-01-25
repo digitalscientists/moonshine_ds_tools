@@ -1,0 +1,121 @@
+Moonshine DS Tools
+------------------
+
+A plugin for [Moonshine](http://github.com/railsmachine/moonshine)
+================================================================
+
+A plugin that provides tools configured by [digital scientists](http://digitalscientists.com/) for deploying Rails apps
+
+
+Tools included
+==============
+
+* Astrails-Safe backup
+* phpMyAdmin (PHP)
+* Webmin
+* Server setup Capistrano recipes
+* DS Thinking Sphinx
+* Radiant CMS
+
+
+Instructions
+============ 
+
+Install Moonshine and related plugins:
+
+    git submodule add git://github.com/railsmachine/moonshine.git vendor/plugins/moonshine
+    git submodule add git://github.com/digitalscientists/moonshine_ds_tools.git vendor/plugins/moonshine_ds_tools
+    git submodule add git://github.com/railsmachine/moonshine_ssh.git vendor/plugins/moonshine_ssh
+    git submodule add git://github.com/railsmachine/moonshine_iptables.git vendor/plugins/moonshine_iptables
+
+Prepare the git submodules:
+
+    git submodule init
+    git submodule update
+
+Ensure all required gems are declared using config.gem in config/environment.rb.
+
+    script/generate moonshine
+
+* copy the vendor/plugins/moonshine_ds_tools/generators/templates/config/moonshine.yml to config/moonshine.yml and replace the current file
+* edit the lines in config/moonshine.yml that end with ### example text ###
+* if you are setting up a staging server initially, use those values in moonshine yml
+* copy the vendor/plugins/moonshine_ds_tools/generators/templates/app/manifests/application_manifest.rb  to app/manifests/application_manifest.rb and replace the current file
+
+Capify your application:
+
+    capify .
+
+* copy the deploy.rb file from the vendor/plugins/moonshine_ds_tools/generators/templates/config/deploy.rb to config/deploy.rb and replace the current file
+* copy the vendor/plugins/moonshine_ds_tools/generators/templates/config/deploy folder to config/deploy
+* edit the config/deploy/staging.rb and config/deploy/production.rb files
+
+* Make sure that config/database.yml contains information for staging and production because moonshine will use this info to setup the databases on the server
+
+Prepare server
+
+    cap staging server:prepare -p USERNAME=rails
+
+* use the root password that your server provider sends via email when slice is created
+* the script will create a rails user as sudo and ask you to set a password
+* the script will ask you to change the root password (or you can put in the old one again)
+* you'll need to add the server's ssh key to your repository host for your project if it is private
+		
+Setup server
+
+    cap staging deploy:setup -p PORT=22
+
+specify port 22 b/c the app will use 30306 by default, use the new admin password from now on
+
+cap staging deploy -p PORT=22
+
+* the initial deploy will take much longer than future ones b/c many things are being installed for your app
+* after this deploy, port is optional b/c moonshine will move ssh access to 30306 and the cap script will automatically use 30306
+
+Tools and Settings
+==========
+
+### phpMyadmin
+
+Configure settings if needed
+
+    plugin :ds_tools
+    recipe :phpmyadmin
+
+    configure(:phpmyadmin => {
+    	:domain => 'phpmyadmin.website.com', 	# defaults to db.yourdomain.com
+    	:only_on_stages => ['production']     # stages you want phpMyAdmin setup, defaults to all
+    })
+
+* Make sure you point your dns to the server to access phpMyAdmin
+* I used sub domains because I was facing conflicts with passenger and rails when trying to setup http://server.com/phpmyadmin
+
+### Webmin
+
+Make sure you have port 10000 open, if you are using the iptables plugin add the following rule:
+
+    plugin :ds_tools
+    recipe :webmin
+
+    -A INPUT -p tcp -m tcp --dport 10000 -j ACCEPT
+
+### DS Thinking Sphinx
+
+Installs Sphix and Thinking Sphinx gem
+
+Include the plugin and recipe(s) in your Moonshine manifest:
+
+    plugin :ds_tools
+    recipe :ds_thinking_sphinx, :ds_thinking_sphinx_gem
+
+
+### Radiant CMS
+
+Specify the order of migrations if needed in your application_manifest.rb:
+
+    configure(:radiant => {:extensions => ['settings', 'all']})
+
+Include the plugin and recipe(s) in your Moonshine manifest
+
+    plugin :ds_tools
+    recipe :radiant, radiant_migrations
