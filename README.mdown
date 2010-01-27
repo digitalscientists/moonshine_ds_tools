@@ -30,23 +30,19 @@ Prepare the git submodules:
     git submodule init
     git submodule update
 
-Ensure all required gems are declared using config.gem in config/environment.rb.
-
-    script/generate moonshine
-
-* copy the vendor/plugins/moonshine_ds_tools/generators/templates/config/moonshine.yml to config/moonshine.yml and replace the current file
-* edit the lines in config/moonshine.yml that end with ### example text ###
-* if you are setting up a staging server initially, use those values in moonshine yml
-* copy the vendor/plugins/moonshine_ds_tools/generators/templates/app/manifests/application_manifest.rb  to app/manifests/application_manifest.rb and replace the current file
-
 Capify your application:
 
     capify .
 
-* copy the deploy.rb file from the vendor/plugins/moonshine_ds_tools/generators/templates/config/deploy.rb to config/deploy.rb and replace the current file
-* copy the vendor/plugins/moonshine_ds_tools/generators/templates/config/deploy folder to config/deploy
-* edit the config/deploy/staging.rb and config/deploy/production.rb files
+Ensure all required gems are declared using config.gem in config/environment.rb.
 
+    script/generate moonshine
+    script/generate moonshine_ds_tools
+
+* answer "y" to prompts for overwriting files
+* edit the lines in config/moonshine.yml that end with ### example text ###
+* if you are setting up a staging server initially, use those values in moonshine yml
+* edit the config/deploy/staging.rb and config/deploy/production.rb files
 * Make sure that config/database.yml contains information for staging and production because moonshine will use this info to setup the databases on the server
 
 Prepare server
