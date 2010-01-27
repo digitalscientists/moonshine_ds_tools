@@ -47,7 +47,7 @@ Ensure all required gems are declared using config.gem in config/environment.rb.
 
 Prepare server
 
-    cap staging server:prepare -p USERNAME=rails
+    cap staging ds_tools:prepare -p USERNAME=rails
 
 * use the root password that your server provider sends via email when slice is created
 * the script will create a rails user as sudo and ask you to set a password
